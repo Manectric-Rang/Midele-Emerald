@@ -1230,6 +1230,12 @@ static void Cmd_if_hp_condition(void)
         else
             gAIScriptPtr += 6;
         break;
+    case USER_HAS_1_HP: // comprueba si la IA tiene 1 PS
+        if (gBattleMons[sBattler_AI].hp == 1)
+            gAIScriptPtr = T1_READ_PTR(gAIScriptPtr + 2);
+        else
+            gAIScriptPtr += 6;
+        break;
     case TARGET_HAS_1_MAX_HP: // comprueba si el rival tiene 1 como PS máximos
         if (gBattleMons[gBattlerTarget].maxHP == 1)
             gAIScriptPtr = T1_READ_PTR(gAIScriptPtr + 2);
