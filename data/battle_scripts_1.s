@@ -4847,6 +4847,7 @@ BattleScript_FriskActivates::
 	end3
 
 BattleScript_SturdyNewEffect::
+    playanimation BS_TARGET, B_ANIM_HANGED_ON, NULL
     printstring STRINGID_PKMNPROTECTEDBY
     pause 0x40
     return
