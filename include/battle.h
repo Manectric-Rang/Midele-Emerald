@@ -97,10 +97,10 @@ struct DisableStruct
     u8 tauntTimer2:4;
     u8 battlerPreventingEscape;
     u8 battlerWithSureHit;
-    u8 hasTwoThirdsOfSleeping:1;      // 1 if the mon slept for a turn and might sleep 0, 1 or 2 more times
-    u8 isGuaranteedToSleep:1;         // 1 if the mon is clearly known to sleep instead of attacking next time
-    u8 filler_isfirstturn_unused_4:4; // Unused bits. This was part of u8 isFirstTurn
-    u8 isFirstTurn:2;                 // Previously 8 bits, but the first 6 were unused
+    u8 hasTwoThirdsOfSleepingUnlessEarlyBird:1; // 1 if the mon slept for a turn and might sleep 0, 1 or 2 more times
+    u8 isGuaranteedToSleepUnlessEarlyBird:1;    // 1 if the mon is clearly known to sleep instead of attacking next time
+    u8 filler_isfirstturn_unused_4:4;           // Unused bits. This was part of u8 isFirstTurn
+    u8 isFirstTurn:2;                           // Previously 8 bits, but the first 6 were unused
     u8 slowStartTimer;
     u8 truantCounter:1;
     u8 truantSwitchInHack:1;
