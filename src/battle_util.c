@@ -1101,6 +1101,8 @@ u8 DoBattlerEndTurnEffects(void)
                     {
                         CancelMultiTurnMoves(gActiveBattler);
                         gBattleMons[gActiveBattler].status1 |= ((Random() % 3) + 2);
+                        gDisableStructs[gBattlerTarget].isGuaranteedToSleepUnlessEarlyBird = 1;
+                        gDisableStructs[gBattlerTarget].hasTwoThirdsOfSleepingUnlessEarlyBird = 0;
 				if (gBattleMons[gActiveBattler].ability == ABILITY_EARLY_BIRD && (gBattleMons[gActiveBattler].status1 == 3 || gBattleMons[gActiveBattler].status1 == 4))
 						gBattleMons[gActiveBattler].status1 = 7; // 3 | 4, pequeño parche para que la IA sepa cuándo despertará un poke con Early Bird
                         BtlController_EmitSetMonData(0, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[gActiveBattler].status1);
@@ -1373,6 +1375,16 @@ u8 AtkCanceller_UnableToUseMove(void)
                         toSub = 2;
                     else
                         toSub = 1;
+
+                    if (gDisableStructs[gBattlerAttacker].isGuaranteedToSleepUnlessEarlyBird && gBattleMons[gBattlerAttacker].status1 != 0x7) // isGuaranteedToSleepUnlessEarlyBird se mantiene a 1 si tiró Rest y es el primer turno que duerme, ya que dormirá otro turno
+                    {
+                        gDisableStructs[gBattlerAttacker].isGuaranteedToSleepUnlessEarlyBird = 0;
+                        if (toSub == 1 && gBattleMons[gBattlerAttacker].status1 != 0x6)
+                            gDisableStructs[gBattlerAttacker].hasTwoThirdsOfSleepingUnlessEarlyBird = 1;
+                    }
+                    else
+                        gDisableStructs[gBattlerAttacker].hasTwoThirdsOfSleepingUnlessEarlyBird = 0;
+
 					if (gBattleMons[gBattlerAttacker].status1 == 0x4)
                         gBattleMons[gBattlerAttacker].status1 += (4 - toSub);
 					else if ((gBattleMons[gBattlerAttacker].status1 & 0x3) <= toSub)
