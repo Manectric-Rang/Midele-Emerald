@@ -149,6 +149,15 @@ u32 sub_805725C(u8 battlerId)
                     else
                         toSub = 1;
 
+                    if (gDisableStructs[gBattlerAttacker].isGuaranteedToSleepUnlessEarlyBird && gBattleMons[gBattlerAttacker].status1 != 0x7) // isGuaranteedToSleepUnlessEarlyBird se mantiene a 1 si tiró Rest y es el primer turno que duerme, ya que dormirá otro turno
+                    {
+                        gDisableStructs[gBattlerAttacker].isGuaranteedToSleepUnlessEarlyBird = 0;
+                        if (toSub == 1 && gBattleMons[gBattlerAttacker].status1 != 0x6)
+                            gDisableStructs[gBattlerAttacker].hasTwoThirdsOfSleepingUnlessEarlyBird = 1;
+                    }
+                    else
+                        gDisableStructs[gBattlerAttacker].hasTwoThirdsOfSleepingUnlessEarlyBird = 0;
+
                     if (gBattleMons[battlerId].status1 == 0x4)
                         gBattleMons[battlerId].status1 += (4 - toSub);
 					else if ((gBattleMons[battlerId].status1 & 0x3) <= toSub)
