@@ -5303,6 +5303,9 @@ static void TurnValuesCleanUp(bool8 var0)
             if (gDisableStructs[gActiveBattler].isFirstTurn)
                 gDisableStructs[gActiveBattler].isFirstTurn--;
 
+            if (!(gBattleMons[gActiveBattler].status1 & STATUS1_SLEEP))
+                gDisableStructs[gActiveBattler].isGuaranteedToSleepUnlessEarlyBird = gDisableStructs[gActiveBattler].hasTwoThirdsOfSleepingUnlessEarlyBird = 0; // debería dar igual porque solo se consultan cuando está dormido, pero por si acaso
+
             if (gDisableStructs[gActiveBattler].rechargeTimer)
             {
                 gDisableStructs[gActiveBattler].rechargeTimer--;
