@@ -2591,9 +2591,10 @@ static void Cmd_resultmessage(void)
             stringId = STRINGID_PKMNENDUREDHIT;
             break;
 		        case MOVE_RESULT_FOE_STURDY:
+            gMoveResultFlags &= ~(MOVE_RESULT_FOE_ENDURED | MOVE_RESULT_FOE_HUNG_ON | MOVE_RESULT_FOE_STURDY);
             BattleScriptPushCursor();
             gBattlescriptCurrInstr = BattleScript_SturdyNewEffect;
-            break;
+            return;
         case MOVE_RESULT_FAILED:
             stringId = STRINGID_BUTITFAILED;
             break;
