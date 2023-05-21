@@ -71,6 +71,11 @@
 #define AI_UNKNOWN_CATEGORIES_PROBABLY_SPECIAL 7
 #define AI_NO_DAMAGING_MOVES 8
 
+// arguments for GetMostSuitableMonToSwitchInto
+#define NOT_CHANGING_IS_IMPOSSIBLE 0
+#define NOT_CHANGING_IS_UNACCEPTABLE 1
+#define NOT_CHANGING_IS_ACCEPTABLE 2
+
 // script's table id to bit
 #define AI_SCRIPT_CHECK_BAD_MOVE (1 << 0)
 #define AI_SCRIPT_TRY_TO_FAINT (1 << 1)
