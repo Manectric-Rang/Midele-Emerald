@@ -12,10 +12,7 @@ enum
 };
 
 void AI_TrySwitchOrUseItem(void);
-u8 GetMostSuitableMonToSwitchInto(bool8 notChangingIsPossible, bool8 notChangingIsAcceptable);
-u8 GetMostSuitableMonToSwitchInto_NotChangingIsImpossible(void);
-u8 GetMostSuitableMonToSwitchInto_NotChangingIsUnacceptable(void);
-u8 GetMostSuitableMonToSwitchInto_NotChangingIsAcceptable(void);
+u8 GetMostSuitableMonToSwitchInto(u8 howTolerableIsNotChanging);
 bool8 AreAttackingStatsLowered(u8 category);
 bool8 IsAccuracyLowered(s8 threshold);
 
