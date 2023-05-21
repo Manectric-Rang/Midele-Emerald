@@ -8,7 +8,6 @@
 #include "random.h"
 #include "util.h"
 #include "constants/abilities.h"
-#include "constants/battle_ai.h"
 #include "constants/item_effects.h"
 #include "constants/items.h"
 #include "constants/moves.h"
