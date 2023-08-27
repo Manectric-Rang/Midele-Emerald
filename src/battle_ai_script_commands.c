@@ -499,14 +499,35 @@ bool32 IsTruantMonVulnerable(u32 battlerAI, u32 opposingBattler, bool8 opposingB
     {
         u32 move = FOES_MOVE_HISTORY(opposingBattler)[i];
 
+        if ((gBattleMons[opposingBattler].status2 & (STATUS2_RECHARGE | STATUS2_MULTIPLETURNS) || (gDisableStructs[opposingBattler].encoreTimer && gDisableStructs[opposingBattler].encoredMove != move))
+            && !gDisableStructs[battlerAI].truantCounter
+            && !opposingBattlerHasToAttackAfterSwitchin
+           )
+            continue; // si el rival está ocupado con otro movimiento y no toca holgazanear, no nos preocupa de momento que el rival tenga este movimiento
+
         switch(gBattleMoves[move].effect)
         {
-            case EFFECT_PROTECT:
-                return TRUE;
             case EFFECT_SUBSTITUTE:
-                if (gBattleMons[opposingBattler].hp > gBattleMons[opposingBattler].maxHP / 4) // tiene PS para meter sub
-                    return TRUE;
-                break;
+                if (gBattleMons[opposingBattler].hp <= gBattleMons[opposingBattler].maxHP / 4)
+                    break; // si no tiene PS para meter sub, no nos preocupa
+
+                if (GetWhoStrikesFirst(battlerAI, opposingBattler, TRUE) == 0
+                    && !gDisableStructs[battlerAI].truantCounter
+                    && !opposingBattlerHasToAttackAfterSwitchin
+                   )
+                    break; // si nos da tiempo a atacar antes de que ponga sub, no nos preocupa por el momento
+
+                return TRUE;
+
+            case EFFECT_PROTECT:
+                if ((gLastResultingMoves[opposingBattler] == MOVE_PROTECT || gLastResultingMoves[opposingBattler] == MOVE_DETECT || gLastResultingMoves[opposingBattler] == MOVE_ENDURE)
+                    && gDisableStructs[opposingBattler].protectUses >= 2
+                    && !gDisableStructs[battlerAI].truantCounter
+                    && !opposingBattlerHasToAttackAfterSwitchin)
+                    break; // si el rival se protegió dos o más veces seguidas, se la juega a que la próxima probablemente falle
+
+                return TRUE;
+
             case EFFECT_SEMI_INVULNERABLE:
                 /*
                   Hay cuatro factores a tener en cuenta:
