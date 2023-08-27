@@ -499,7 +499,13 @@ bool32 IsTruantMonVulnerable(u32 battlerAI, u32 opposingBattler, bool8 opposingB
     {
         u32 move = FOES_MOVE_HISTORY(opposingBattler)[i];
 
-        if ((gBattleMons[opposingBattler].status2 & (STATUS2_RECHARGE | STATUS2_MULTIPLETURNS) || (gDisableStructs[opposingBattler].encoreTimer && gDisableStructs[opposingBattler].encoredMove != move))
+        if (
+            (
+             (gBattleMons[opposingBattler].status2 & (STATUS2_RECHARGE | STATUS2_MULTIPLETURNS) && !(gStatuses3[opposingBattler] & STATUS3_SEMI_INVULNERABLE && gBattleMoves[move].effect == EFFECT_SEMI_INVULNERABLE)
+             ) 
+             || 
+             (gDisableStructs[opposingBattler].encoreTimer && gDisableStructs[opposingBattler].encoredMove != move)
+            )
             && !gDisableStructs[battlerAI].truantCounter
             && !opposingBattlerHasToAttackAfterSwitchin
            )
