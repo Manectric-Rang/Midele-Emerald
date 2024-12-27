@@ -5385,6 +5385,7 @@ AI_PreferBatonPass_End:
 	score +2
 	end
 
+.align 2
 sMovesTable_ProtectMoves:
     .2byte MOVE_PROTECT
     .2byte MOVE_DETECT
