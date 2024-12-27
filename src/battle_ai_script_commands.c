@@ -184,7 +184,7 @@ static void Cmd_if_type(void);
 static void Cmd_if_target_is_ally(void);
 static void Cmd_if_flash_fired(void);
 static void Cmd_if_holds_item(void);
-static void Cmd_get_hazards_count(void);
+static void Cmd_get_spikes_count(void);
 static void Cmd_get_curr_dmg_hp_percent(void);
 static void Cmd_if_hp_condition(void);
 static void Cmd_if_accuracy_less_than(void);
@@ -313,7 +313,7 @@ static const BattleAICmdFunc sBattleAICmdTable[] =
     Cmd_check_ability,                              // 0x60
     Cmd_if_flash_fired,                             // 0x61
     Cmd_if_holds_item,                              // 0x62
-    Cmd_get_hazards_count,                          // 0x63
+    Cmd_get_spikes_count,                           // 0x63
     Cmd_get_curr_dmg_hp_percent,                    // 0x64
     Cmd_if_hp_condition,                            // 0x65
     Cmd_if_accuracy_less_than,                      // 0x66
@@ -3328,19 +3328,14 @@ static bool8 AIStackPop(void)
     }
 }
 
-static void Cmd_get_hazards_count(void)
+static void Cmd_get_spikes_count(void)
 {
     u8 battlerId = BattleAI_GetWantedBattler(gAIScriptPtr[1]);
     u8 side = GetBattlerSide(battlerId);
 
-    switch (T1_READ_16(gAIScriptPtr + 2))
-    {
-    case EFFECT_SPIKES:
-        AI_THINKING_STRUCT->funcResult = gSideTimers[side].spikesAmount;
-        break;
-    }
+    AI_THINKING_STRUCT->funcResult = gSideTimers[side].spikesAmount;
 
-    gAIScriptPtr += 4;
+    gAIScriptPtr += 2;
 }
 
 static void Cmd_get_curr_dmg_hp_percent(void)

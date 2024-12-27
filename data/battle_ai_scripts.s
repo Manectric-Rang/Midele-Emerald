@@ -649,7 +649,7 @@ AI_CBM_Spikes: @ 82DC5CC
 	count_usable_party_mons AI_TARGET
 	if_equal 0, Score_Minus10
 	if_not_side_affecting AI_TARGET, SIDE_STATUS_SPIKES, AI_Ret
-	get_hazards_count AI_TARGET, EFFECT_SPIKES
+	get_spikes_count AI_TARGET
 	if_equal 3, Score_Minus10
 	end
 
@@ -1491,7 +1491,7 @@ AI_CV_RapidSpin_End:
 AI_CV_RapidSpin_SpikesCount:
     count_usable_party_mons AI_USER
     if_equal 0, AI_CV_RapidSpin_SpikesAreIrrelevant
-    get_hazards_count AI_USER, EFFECT_SPIKES
+    get_spikes_count AI_USER
     if_equal 3, Score_Plus3
     if_equal 2, Score_Plus2
     goto Score_Plus1        @ hay una fila de púas
@@ -2361,7 +2361,7 @@ AI_CV_Roar:
 	if_type AI_TARGET, TYPE_FLYING, AI_CV_Roar_SpikesWontFaintTheTarget
 	if_hp_condition TARGET_HAS_1_MAX_HP, Score_Plus2
 	if_has_a_50_percent_hp_recovery_move AI_TARGET, AI_CV_Roar_SpikesWontFaintTheTarget
-	get_hazards_count AI_TARGET, EFFECT_SPIKES
+	get_spikes_count AI_TARGET
 	if_equal 3, AI_CV_Roar_Spikes_3
 	if_equal 2, AI_CV_Roar_Spikes_2
 	if_equal 1, AI_CV_Roar_Spikes_1
@@ -2388,7 +2388,7 @@ AI_CV_Roar_SpikesWontFaintTheTarget:
 	calculate_nhko AI_TARGET
 	if_equal 1, AI_CV_Roar_Discourage
 AI_CV_Roar_ConsiderRoarIfSpikesAndDamagingMovesAreWeak:
-	get_hazards_count AI_TARGET, EFFECT_SPIKES
+	get_spikes_count AI_TARGET
 	if_equal 3, Score_Minus1
 	if_equal 2, Score_Minus2
 	if_equal 0, AI_CV_Roar_Discourage
@@ -3678,7 +3678,7 @@ AI_CV_Spikes_ConsiderSafeSetup:
 	if_has_non_ineffective_move_with_effect AI_TARGET, EFFECT_RAPID_SPIN, Score_Minus2
 	if_random_less_than 100, AI_CV_Spikes_End
 	if_not_side_affecting AI_TARGET, SIDE_STATUS_SPIKES, AI_CV_Spikes_Plus1
-	get_hazards_count AI_TARGET, EFFECT_SPIKES
+	get_spikes_count AI_TARGET
 	if_equal 3, AI_CV_Spikes_End
 	goto AI_CV_Spikes_Plus1
 
@@ -3705,7 +3705,7 @@ AI_CV_Spikes_ConsiderSingleTurnOfSetup:
 	if_random_less_than 100, AI_CV_Spikes_End
 	if_not_side_affecting AI_TARGET, SIDE_STATUS_SPIKES, AI_CV_Spikes_Plus1
 	if_random_less_than 128, AI_CV_Spikes_End
-	get_hazards_count AI_TARGET, EFFECT_SPIKES
+	get_spikes_count AI_TARGET
 	if_more_than 1, AI_CV_Spikes_End
 AI_CV_Spikes_Plus1:
 	score +1

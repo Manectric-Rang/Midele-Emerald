@@ -556,10 +556,9 @@
 	.4byte \param2
 	.endm
 	
-	.macro get_hazards_count battler:req, effect:req
+	.macro get_spikes_count battler:req
 	.byte 0x63
 	.byte \battler
-	.2byte \effect
 	.endm
 	
 	.macro get_curr_dmg_hp_percent
