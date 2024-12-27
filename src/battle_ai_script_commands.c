@@ -2795,7 +2795,7 @@ static void Cmd_if_cant_faint(void)
 static void Cmd_if_has_move(void)
 {
     s32 i;
-    const u16 *movePtr = (u16 *)(gAIScriptPtr + 2);
+    u16 move = T1_READ_16(gAIScriptPtr + 2);
 	u8 moveLimitations;
 
     switch (gAIScriptPtr[1])
@@ -2804,7 +2804,7 @@ static void Cmd_if_has_move(void)
         moveLimitations = CheckMoveLimitations(sBattler_AI, 0, MOVE_LIMITATION_PP);
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
-            if (gBattleMons[sBattler_AI].moves[i] == *movePtr && !(gBitTable[i] & moveLimitations))
+            if (gBattleMons[sBattler_AI].moves[i] == move && !(gBitTable[i] & moveLimitations))
                 break;
         }
         if (i == MAX_MON_MOVES)
@@ -2823,7 +2823,7 @@ static void Cmd_if_has_move(void)
         {
             for (i = 0; i < MAX_MON_MOVES; i++)
             {
-                if (gBattleMons[sBattler_AI ^ BIT_FLANK].moves[i] == *movePtr && !(gBitTable[i] & moveLimitations))
+                if (gBattleMons[sBattler_AI ^ BIT_FLANK].moves[i] == move && !(gBitTable[i] & moveLimitations))
                     break;
             }
         }
@@ -2837,7 +2837,7 @@ static void Cmd_if_has_move(void)
         moveLimitations = CheckMoveLimitations(gBattlerTarget, 0, MOVE_LIMITATION_PP);
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
-            if (FOES_MOVE_HISTORY(gBattlerTarget)[i] == *movePtr)
+            if (FOES_MOVE_HISTORY(gBattlerTarget)[i] == move)
             {
                 s32 j;
                 for (j = 0; j < MAX_MON_MOVES; j++)
@@ -2858,7 +2858,7 @@ static void Cmd_if_has_move(void)
 static void Cmd_if_doesnt_have_move(void)
 {
     s32 i;
-    const u16 *movePtr = (u16 *)(gAIScriptPtr + 2);
+    u16 move = T1_READ_16(gAIScriptPtr + 2);
     u8 moveLimitations;
 
     switch(gAIScriptPtr[1])
@@ -2868,7 +2868,7 @@ static void Cmd_if_doesnt_have_move(void)
         moveLimitations = CheckMoveLimitations(sBattler_AI, 0, MOVE_LIMITATION_PP);
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
-            if (gBattleMons[sBattler_AI].moves[i] == *movePtr && !(gBitTable[i] & moveLimitations))
+            if (gBattleMons[sBattler_AI].moves[i] == move && !(gBitTable[i] & moveLimitations))
                 break;
         }
         if (i != MAX_MON_MOVES)
@@ -2881,7 +2881,7 @@ static void Cmd_if_doesnt_have_move(void)
         moveLimitations = CheckMoveLimitations(gBattlerTarget, 0, MOVE_LIMITATION_PP);
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
-            if (FOES_MOVE_HISTORY(gBattlerTarget)[i] == *movePtr)
+            if (FOES_MOVE_HISTORY(gBattlerTarget)[i] == move)
             {
                 s32 j;
                 for (j = 0; j < MAX_MON_MOVES; j++)
