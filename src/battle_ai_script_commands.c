@@ -3711,6 +3711,8 @@ static void Cmd_get_possible_categories_of_foes_attacks(void)
     s32 i, j;
     bool8 physical_move_known = FALSE;
     bool8 special_move_known = FALSE;
+    bool8 physical_boosting_move_known = FALSE;
+    bool8 special_boosting_move_known = FALSE;
     bool8 all_moves_known = TRUE;
     u8 result;
     
@@ -3767,6 +3769,37 @@ static void Cmd_get_possible_categories_of_foes_attacks(void)
                 physical_move_known = TRUE;
             else
                 special_move_known = TRUE;
+        }
+        else
+            switch(gBattleMoves[move].effect)
+            {
+                case EFFECT_ATTACK_SPATK_UP:
+                    special_boosting_move_known = TRUE;
+                    // fall through: también se marcará el físico a continuación
+                case EFFECT_ATTACK_UP:
+                case EFFECT_ATTACK_UP_2:
+                case EFFECT_BELLY_DRUM:
+                case EFFECT_DEFENSE_DOWN:
+                case EFFECT_DEFENSE_DOWN_2:
+                case EFFECT_TICKLE:
+                case EFFECT_BULK_UP:
+                case EFFECT_DRAGON_DANCE:
+                case EFFECT_COIL:
+                    physical_boosting_move_known = TRUE;
+                    break;
+                case EFFECT_SPECIAL_ATTACK_UP:
+                case EFFECT_SPECIAL_ATTACK_UP_2:
+                case EFFECT_SPECIAL_ATTACK_UP_3:
+                case EFFECT_SPECIAL_DEFENSE_DOWN: // no se usa, pero
+                case EFFECT_SPECIAL_DEFENSE_DOWN_2:
+                case EFFECT_CALM_MIND:
+                case EFFECT_QUIVER_DANCE:
+                    special_boosting_move_known = TRUE;
+                    break;
+                case EFFECT_CURSE:
+                    if (gBattleMons[gBattlerTarget].type1 != TYPE_GHOST && gBattleMons[gBattlerTarget].type2 != TYPE_GHOST)
+                        physical_boosting_move_known = TRUE;
+                    break;
             }
     }
     
@@ -3788,6 +3821,14 @@ static void Cmd_get_possible_categories_of_foes_attacks(void)
     }
     else if (all_moves_known || gBattleMons[gBattlerTarget].species == SPECIES_WOBBUFFET || gBattleMons[gBattlerTarget].species == SPECIES_WYNAUT)
         result = AI_NO_DAMAGING_MOVES;
+    else if (physical_boosting_move_known && !special_boosting_move_known)
+        result = AI_UNKNOWN_CATEGORIES_PROBABLY_PHYSICAL;
+    else if (special_boosting_move_known && !physical_boosting_move_known)
+        result = AI_UNKNOWN_CATEGORIES_PROBABLY_SPECIAL;
+    else if (gBattleMons[gBattlerTarget].statStages[STAT_ATK] > 7 && gBattleMons[gBattlerTarget].statStages[STAT_ATK] - 1 > gBattleMons[gBattlerTarget].statStages[STAT_SPATK])
+        result = AI_UNKNOWN_CATEGORIES_PROBABLY_PHYSICAL;
+    else if (gBattleMons[gBattlerTarget].statStages[STAT_SPATK] > 7 && gBattleMons[gBattlerTarget].statStages[STAT_SPATK] - 1 > gBattleMons[gBattlerTarget].statStages[STAT_ATK])
+        result = AI_UNKNOWN_CATEGORIES_PROBABLY_SPECIAL;
     else
     {
         u16 base_attack = gBaseStats[gBattleMons[gBattlerTarget].species].baseAttack;
