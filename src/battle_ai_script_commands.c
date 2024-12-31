@@ -2684,13 +2684,19 @@ static void Cmd_if_not_effect(void)
 static void Cmd_if_stat_level_less_than(void)
 {
     u32 battlerId;
+    u8 targetValue;
+
+    if (gAIScriptPtr[3] == AI_SAME_STAT_IN_USER)
+        targetValue = gBattleMons[sBattler_AI].statStages[gAIScriptPtr[2]];
+    else
+        targetValue = gAIScriptPtr[3];
 
     if (gAIScriptPtr[1] == AI_USER)
         battlerId = sBattler_AI;
     else
         battlerId = gBattlerTarget;
 
-    if (gBattleMons[battlerId].statStages[gAIScriptPtr[2]] < gAIScriptPtr[3])
+    if (gBattleMons[battlerId].statStages[gAIScriptPtr[2]] < targetValue)
         gAIScriptPtr = T1_READ_PTR(gAIScriptPtr + 4);
     else
         gAIScriptPtr += 8;
@@ -2699,13 +2705,19 @@ static void Cmd_if_stat_level_less_than(void)
 static void Cmd_if_stat_level_more_than(void)
 {
     u32 battlerId;
+    u8 targetValue;
+
+    if (gAIScriptPtr[3] == AI_SAME_STAT_IN_USER)
+        targetValue = gBattleMons[sBattler_AI].statStages[gAIScriptPtr[2]];
+    else
+        targetValue = gAIScriptPtr[3];
 
     if (gAIScriptPtr[1] == AI_USER)
         battlerId = sBattler_AI;
     else
         battlerId = gBattlerTarget;
 
-    if (gBattleMons[battlerId].statStages[gAIScriptPtr[2]] > gAIScriptPtr[3])
+    if (gBattleMons[battlerId].statStages[gAIScriptPtr[2]] > targetValue)
         gAIScriptPtr = T1_READ_PTR(gAIScriptPtr + 4);
     else
         gAIScriptPtr += 8;
@@ -2714,13 +2726,19 @@ static void Cmd_if_stat_level_more_than(void)
 static void Cmd_if_stat_level_equal(void)
 {
     u32 battlerId;
+    u8 targetValue;
+
+    if (gAIScriptPtr[3] == AI_SAME_STAT_IN_USER)
+        targetValue = gBattleMons[sBattler_AI].statStages[gAIScriptPtr[2]];
+    else
+        targetValue = gAIScriptPtr[3];
 
     if (gAIScriptPtr[1] == AI_USER)
         battlerId = sBattler_AI;
     else
         battlerId = gBattlerTarget;
 
-    if (gBattleMons[battlerId].statStages[gAIScriptPtr[2]] == gAIScriptPtr[3])
+    if (gBattleMons[battlerId].statStages[gAIScriptPtr[2]] == targetValue)
         gAIScriptPtr = T1_READ_PTR(gAIScriptPtr + 4);
     else
         gAIScriptPtr += 8;
@@ -2729,13 +2747,19 @@ static void Cmd_if_stat_level_equal(void)
 static void Cmd_if_stat_level_not_equal(void)
 {
     u32 battlerId;
+    u8 targetValue;
+
+    if (gAIScriptPtr[3] == AI_SAME_STAT_IN_USER)
+        targetValue = gBattleMons[sBattler_AI].statStages[gAIScriptPtr[2]];
+    else
+        targetValue = gAIScriptPtr[3];
 
     if (gAIScriptPtr[1] == AI_USER)
         battlerId = sBattler_AI;
     else
         battlerId = gBattlerTarget;
 
-    if (gBattleMons[battlerId].statStages[gAIScriptPtr[2]] != gAIScriptPtr[3])
+    if (gBattleMons[battlerId].statStages[gAIScriptPtr[2]] != targetValue)
         gAIScriptPtr = T1_READ_PTR(gAIScriptPtr + 4);
     else
         gAIScriptPtr += 8;

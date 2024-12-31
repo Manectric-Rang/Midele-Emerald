@@ -71,6 +71,9 @@
 #define AI_UNKNOWN_CATEGORIES_PROBABLY_SPECIAL 7
 #define AI_NO_DAMAGING_MOVES 8
 
+// argument for if_stat_level_[...], instead of a constant value in the range 0~12
+#define AI_SAME_STAT_IN_USER 255
+
 // script's table id to bit
 #define AI_SCRIPT_CHECK_BAD_MOVE (1 << 0)
 #define AI_SCRIPT_TRY_TO_FAINT (1 << 1)

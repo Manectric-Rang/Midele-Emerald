@@ -2732,7 +2732,9 @@ AI_CV_SwaggerHasPsychUp:
 	if_stat_level_more_than AI_USER, STAT_ATK, 8, AI_CV_Confuse
 @ Usuario: +1 ~ +2, objetivo: +2
 AI_CV_SwaggerHasPsychUp_Encourage:
-	score +2
+	score +1
+	if_stat_level_more_than AI_TARGET, STAT_ATK, 7, AI_CV_SwaggerHasPsychUp_End
+	score +1
 	get_turn_count
 	if_not_equal 0, AI_CV_SwaggerHasPsychUp_End
 	score +2
@@ -3976,32 +3978,36 @@ AI_CV_BellyDrum_End:
 	end
 
 AI_CV_PsychUp:
+	get_last_used_bank_move AI_USER
+	get_move_effect_from_result
+	if_equal EFFECT_PSYCH_UP, AI_CV_PsychUp_Minus3andcontinue
 	if_stat_level_more_than AI_TARGET, STAT_ATK, 8, AI_CV_PsychUp2
 	if_stat_level_more_than AI_TARGET, STAT_DEF, 8, AI_CV_PsychUp2
 	if_stat_level_more_than AI_TARGET, STAT_SPATK, 8, AI_CV_PsychUp2
 	if_stat_level_more_than AI_TARGET, STAT_SPDEF, 8, AI_CV_PsychUp2
 	if_stat_level_more_than AI_TARGET, STAT_EVASION, 8, AI_CV_PsychUp2
-	goto AI_CV_PsychUp_ScoreDown2
-
+	if_stat_level_more_than AI_TARGET, STAT_ATK, 7, AI_CV_PsychUp_Minus1andcontinue
+	if_stat_level_more_than AI_TARGET, STAT_DEF, 7, AI_CV_PsychUp_Minus1andcontinue
+	if_stat_level_more_than AI_TARGET, STAT_SPATK, 7, AI_CV_PsychUp_Minus1andcontinue
+	if_stat_level_more_than AI_TARGET, STAT_SPDEF, 7, AI_CV_PsychUp_Minus1andcontinue
+	if_stat_level_more_than AI_TARGET, STAT_EVASION, 7, AI_CV_PsychUp_Minus1andcontinue
+AI_CV_PsychUp_Minus3andcontinue:
+	score -2
+AI_CV_PsychUp_Minus1andcontinue:
+	score -1
 AI_CV_PsychUp2:
-	if_stat_level_less_than AI_USER, STAT_ATK, 7, AI_CV_PsychUp3
-	if_stat_level_less_than AI_USER, STAT_DEF, 7, AI_CV_PsychUp3
-	if_stat_level_less_than AI_USER, STAT_SPATK, 7, AI_CV_PsychUp3
-	if_stat_level_less_than AI_USER, STAT_SPDEF, 7, AI_CV_PsychUp3
-	if_stat_level_less_than AI_USER, STAT_EVASION, 7, AI_CV_PsychUp_ScoreUp1
-	if_random_less_than 50, AI_CV_PsychUp_End
-	goto AI_CV_PsychUp_ScoreDown2
-
-AI_CV_PsychUp_ScoreUp1:
-	score +1
-
-AI_CV_PsychUp3:
-	score +1
+	if_stat_level_more_than AI_TARGET, STAT_EVASION, AI_SAME_STAT_IN_USER, Score_Plus2
+	if_stat_level_more_than AI_TARGET, STAT_ATK, AI_SAME_STAT_IN_USER, AI_CV_PsychUp_Plus1or2
+	if_stat_level_more_than AI_TARGET, STAT_DEF, AI_SAME_STAT_IN_USER, AI_CV_PsychUp_Plus1or2
+	if_stat_level_more_than AI_TARGET, STAT_SPATK, AI_SAME_STAT_IN_USER, AI_CV_PsychUp_Plus1or2
+	if_stat_level_more_than AI_TARGET, STAT_SPDEF, AI_SAME_STAT_IN_USER, AI_CV_PsychUp_Plus1or2
+	score -2
 	end
 
-AI_CV_PsychUp_ScoreDown2:
-	score -2
-
+AI_CV_PsychUp_Plus1or2:
+	score +1
+	if_random_less_than 128, AI_CV_PsychUp_End
+	score +1
 AI_CV_PsychUp_End:
 	end
 
@@ -5575,13 +5581,17 @@ AI_HEALPULSEALLY:
 	goto Score_Plus5
 
 AI_TrySwaggerOnAlly:
+	if_stat_level_equal AI_TARGET, STAT_ATK, 12, Score_Minus30_
 	if_holds_item AI_TARGET, ITEM_PERSIM_BERRY, AI_TrySwaggerOnAlly2
 	if_holds_item AI_TARGET, ITEM_LUM_BERRY, AI_TrySwaggerOnAlly2
 	if_ability AI_USER_PARTNER, ABILITY_OWN_TEMPO, AI_TrySwaggerOnAlly2
+	if_target_faster Score_Minus30_
+	if_status2 AI_TARGET, STATUS2_CONFUSION, AI_TrySwaggerOnAlly2
 	goto Score_Minus30_
 
 AI_TrySwaggerOnAlly2:
 	if_stat_level_more_than AI_TARGET, STAT_ATK, 7, AI_TrySwaggerOnAlly_End
+	if_stat_level_equal AI_TARGET, STAT_ATK, 7, Score_Plus1
 	score +3
 
 AI_TrySwaggerOnAlly_End:
