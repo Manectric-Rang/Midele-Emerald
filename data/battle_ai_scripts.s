@@ -3552,18 +3552,18 @@ AI_CV_Protect:
 
 @ La IA es más rápida: se protege si recibe OHKO y no puede meterlo antes
     calculate_nhko AI_TARGET
-    if_equal 1, Score_Plus2
+    if_equal 1, Score_Plus3
     goto AI_CV_Protect_OpponentIsNotInAMultiturnAttack
 
 @ La IA es más lenta: se protege si recibe OHKO o si recibe 2HKO y no puede meter OHKO
 AI_CV_Protect_FasterOpponentIsCharging:
     calculate_nhko AI_TARGET
     if_equal 1, Score_Plus5
-    if_equal 2, Score_Plus2
+    if_equal 2, Score_Plus3
     @ recibe 3HKO o menos daño: sigue por donde iba en la evaluación de Protect
 AI_CV_Protect_OpponentIsNotInAMultiturnAttack:
 	if_next_turn_target_might_use_move_with_effect EFFECT_MIDELE_POWER, AI_CV_Protect_ScoreDown5
-	if_status3 AI_USER, STATUS3_ALWAYS_HITS, Score_Plus2
+	if_status3 AI_USER, STATUS3_ALWAYS_HITS, Score_Plus3
 	if_ability AI_USER, ABILITY_SPEED_BOOST, AI_CV_Protect_Boost
 	if_status  AI_USER, STATUS1_PSN_ANY | STATUS1_BURN, AI_CV_ProtectUserStatused
 	if_status2 AI_USER, STATUS2_CURSED | STATUS2_INFATUATION, AI_CV_ProtectUserStatused
@@ -3589,7 +3589,7 @@ AI_CV_Protect_TargetCanRecoverFromItsCurrentStatus:
 AI_CV_Protect_NoRelevantPerishSong:
 	if_receiving_wish AI_USER, AI_CV_Protect_Wish
 	if_status2 AI_TARGET, STATUS2_INFATUATION, AI_CV_Protect_End
-	if_status3 AI_TARGET, STATUS3_YAWN, AI_CV_Protect_End
+	if_status3 AI_TARGET, STATUS3_YAWN, AI_CV_Protect_SlightlyEncourageAndContinue
 	goto AI_CV_Protect2
 
 AI_CV_Protect_TargetUnderPerishSong:
@@ -3609,6 +3609,8 @@ AI_CV_Protect_TargetUnderPerishSong_ButCanSwitchOut:
 
 AI_CV_Protect_EncourageAndContinue:
 	score +2
+AI_CV_Protect_SlightlyEncourageAndContinue:
+	score +1
 
 AI_CV_Protect2:
 	if_random_less_than 128, AI_CV_Protect4
