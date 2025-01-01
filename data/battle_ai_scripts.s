@@ -5020,8 +5020,12 @@ AI_TryToFaint_ProbablyIrrelevantSecondaryEffect:
 
 AI_TryToFaint_ConsiderEncouragingKOingMove:
     if_status2 AI_TARGET, STATUS2_SUBSTITUTE, AI_TryToFaint_CheckFakeOutWithSub
-    if_effect EFFECT_PURSUIT, AI_TryToFaint_PursuitAndFakeOutBonus
-    goto AI_TryToFaint_CheckFakeOutWithNoSub
+    if_effect EFFECT_FAKE_OUT, AI_TryToFaint_FakeOutWithNoSub
+    if_not_effect EFFECT_PURSUIT, AI_TryToFaint_SkipPlus3Bonus
+    count_usable_party_mons AI_TARGET
+    if_more_than 0, AI_TryToFaint_PursuitAndFakeOutBonus
+    goto AI_TryToFaint_SkipPlus3Bonus
+
 AI_TryToFaint_CheckFakeOutWithSub:
     if_not_effect EFFECT_FAKE_OUT, AI_TryToFaint_SkipPlus3Bonus
     is_first_turn_for AI_USER
@@ -5029,8 +5033,7 @@ AI_TryToFaint_CheckFakeOutWithSub:
     if_user_faster AI_TryToFaint_SkipPlus3Bonus @ no tiene sentido sumarle +3 a Fake Out si la IA ya es más rápida y el rival tiene sub
     goto AI_TryToFaint_PursuitAndFakeOutBonus
 
-AI_TryToFaint_CheckFakeOutWithNoSub:
-    if_not_effect EFFECT_FAKE_OUT, AI_TryToFaint_SkipPlus3Bonus
+AI_TryToFaint_FakeOutWithNoSub:
     is_first_turn_for AI_USER
     if_equal 0, AI_TryToFaint_End
 AI_TryToFaint_PursuitAndFakeOutBonus:
