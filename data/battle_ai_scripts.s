@@ -3944,12 +3944,20 @@ AI_CV_SunnyDay:
 	get_ability AI_USER_PARTNER
 	if_equal ABILITY_FORECAST, AI_CV_SunnyDay3
 	if_equal ABILITY_CHLOROPHYLL, AI_CV_SunnyDay3
-	if_user_faster AI_CV_SunnyDay2
+	if_target_faster AI_CV_SunnyDay_TargetIsFaster
+	if_hp_less_than AI_USER, 40, AI_CV_SunnyDay_ScoreDown1
+	if_type AI_USER, TYPE_FIRE, AI_CV_SunnyDay_CheckIfSlowerTargetHasWaterType
+	goto AI_CV_SunnyDay2
+	
+AI_CV_SunnyDay_CheckIfSlowerTargetHasWaterType:
+	if_type AI_TARGET, TYPE_WATER, AI_CV_SunnyDay3
+	goto AI_CV_SunnyDay2
+	
+AI_CV_SunnyDay_TargetIsFaster:
 	get_ability AI_USER
 	if_equal ABILITY_CHLOROPHYLL, AI_CV_SunnyDay3
-
-AI_CV_SunnyDay2:
 	if_hp_less_than AI_USER, 40, AI_CV_SunnyDay_ScoreDown1
+AI_CV_SunnyDay2:
 	get_weather
 	if_equal AI_WEATHER_HAIL, AI_CV_SunnyDay3
 	if_equal AI_WEATHER_RAIN, AI_CV_SunnyDay3
