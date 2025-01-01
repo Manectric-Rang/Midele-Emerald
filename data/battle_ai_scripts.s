@@ -3968,6 +3968,7 @@ AI_CV_SunnyDay_End:
 
 AI_CV_BellyDrum:
 	if_perish_song_about_to_trigger AI_USER, Score_Minus8
+	if_status2 AI_USER, STATUS2_CURSED, Score_Minus8
 	if_hp_condition USER_CANNOT_USE_BELLY_DRUM, AI_CV_BellyDrum_ScoreDown2
 	if_status2 AI_USER, STATUS2_SUBSTITUTE, Score_Plus1
 	if_hp_less_than AI_USER, 90, AI_CV_BellyDrum_ScoreDown2
