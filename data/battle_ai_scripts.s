@@ -1011,11 +1011,12 @@ AI_UselessEffectsWhenChoiced:
 	
 @ If move doesn't do meaningful damage, switch out
 AI_ChoiceDamage:
+	if_effect EFFECT_OHKO, AI_ChoiceDamage_End
+	if_effect EFFECT_BATON_PASS, AI_ChoiceDamage_End
+	if_effect EFFECT_MEMENTO, Score_Minus2
     if_move_is_useless_when_choiced Score_Minus12
 	get_considered_move_power
 	if_equal 0, Score_Minus5
-AI_ChoiceDamage_CalculateNHKO:
-	if_effect EFFECT_OHKO, AI_ChoiceDamage_End
     calculate_nhko
     if_less_than 3, AI_ChoiceDamage_End
     if_equal 3, AI_ChoiceDamage_3HKO
