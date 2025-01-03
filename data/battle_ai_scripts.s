@@ -359,6 +359,7 @@ AI_CBM_AccUp: @ 82DC375
 AI_CBM_EvasionUp: @ 82DC37E
 	if_stat_level_equal AI_USER, STAT_EVASION, 12, AI_CBM_EvasionUp_Minus10or8
 AI_CBM_DefenseOrEvasion_CheckIfOpponentCanPhaze:
+	if_status3 AI_USER, STATUS3_PERISH_SONG, Score_Minus8
 	if_next_turn_target_might_use_move_with_effect EFFECT_HAZE, Score_Minus8
 	if_next_turn_target_might_use_move_with_effect EFFECT_ROAR, AI_CBM_Minus8IfAICanBePhazed
 	end
@@ -1673,23 +1674,30 @@ AI_CV_SpeedUp_AlreadyFasterAndNoChanceToSweep:
 	score -3
 	goto AI_CV_SpeedUp_End
 
-@ Si tiene Baton Pass, los criterios anteriores se sustituyen por:
+@ Si puede usar Baton Pass y no teme ser (p)hazeado, los criterios anteriores se sustituyen por:
 @ no subirse Velocidad si espera recibir KO o si está ya a +4
 @ por lo menos (en general, de sobra para outspeedear casi todo)
 @ Además, le resta 1 punto (pero continúa evaluando) si ya está a +2 o +3
 AI_CV_SpeedUp_HasBatonPass:
+    if_status2 AI_USER, STATUS2_CURSED, AI_CV_SpeedUp_NoBatonPass
+    if_status3 AI_USER, STATUS3_PERISH_SONG, AI_CV_SpeedUp_NoBatonPass
+    if_next_turn_target_might_use_move_with_effect EFFECT_PERISH_SONG, AI_CV_SpeedUp_NoBatonPass
+    if_next_turn_target_might_use_move_with_effect EFFECT_HAZE, AI_CV_SpeedUp_NoBatonPass
+    if_ability AI_USER, ABILITY_SUCTION_CUPS, AI_CV_SpeedUp_HasBatonPass_SkipWhirlwind
+    if_status3 AI_USER, STATUS3_ROOTED, AI_CV_SpeedUp_HasBatonPass_SkipWhirlwind
+    if_next_turn_target_might_use_move_with_effect EFFECT_ROAR, AI_CV_SpeedUp_NoBatonPass
+AI_CV_SpeedUp_HasBatonPass_SkipWhirlwind:
     calculate_nhko AI_TARGET
     if_equal 1, Score_Minus3
     if_stat_level_more_than AI_USER, STAT_SPEED, 9, Score_Minus3
     if_stat_level_less_than AI_USER, STAT_SPEED, 8, AI_CV_SpeedUp2
 AI_CV_SpeedUp2WithPenalty:
-    score -1 @ (sigue)
+    score -1
 AI_CV_SpeedUp2: @ 82DCC6A
 	if_free_setup_turn Score_Plus5
 	if_this_attack_might_be_the_last Score_Minus5
 	if_random_less_than 70, AI_CV_SpeedUp_End
 	score +3
-
 AI_CV_SpeedUp_End: @ 82DCC72
 	end
 
