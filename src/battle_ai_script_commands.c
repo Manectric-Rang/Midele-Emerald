@@ -1150,30 +1150,44 @@ static u8 ChooseMoveOrAction_Singles(void)
                 SWITCH_IF_THERE_IS_A_SUITABLE_MON(NOT_CHANGING_IS_ACCEPTABLE);
         }
         // El poke lleva muchos turnos intoxicado, mejor cambiar
-        #define _AI_CURRENT_TOXIC_TURNS_ ((gBattleMons[sBattler_AI].status1 & 0xF00) >> 8)
-        if (gBattleMons[sBattler_AI].status1 & STATUS1_TOXIC_POISON
-            && (
-                _AI_CURRENT_TOXIC_TURNS_ >= 4 // lleva al menos 4 turnos de daño y por tanto va a perder más de un 25% (al menos un 31,25%) de sus PS
-                || (_AI_CURRENT_TOXIC_TURNS_ == 3 // 3 turnos de daño también es mucho en los siguientes supuestos
-                    && (
-                           (gBattleMons[sBattler_AI].status2 & STATUS2_CURSED) // estar maldito
-                        || (gStatuses3[sBattler_AI] & STATUS3_LEECHSEED)       // tener Leech Seed
-                        || sBattler_AIisLosingHPDueToWeather(FALSE)            // ser dañado por clima y no tener Restos
-                        || ((gBattleMons[sBattler_AI].item != ITEM_LEFTOVERS || sBattler_AIisLosingHPDueToWeather(TRUE)) && (Random()%2)) // o, en caso de no tener Restos o ser dañado por clima pero sí tener Restos, un 50% de cambiar
-                       )
+        if (gBattleMons[sBattler_AI].status1 & STATUS1_TOXIC_POISON)
+        {
+            s32 current_toxic_turns = ((gBattleMons[sBattler_AI].status1 & STATUS1_TOXIC_COUNTER) >> 8);
+            s32 turns_threshold = 3;
+            bool8 notChangingIsAcceptable;
+            
+            // Si el número de turnos intoxicado supera turns_threshold, la IA intenta cambiar como sea:
+            // si lleva al menos 4 turnos de daño, perderá más de un 25% (al menos un 31,25%) de sus PS.
+            // Si lo iguala, intenta cambiar si encuentra un buen cambio.
+            // turns_threshold se ajusta según el contexto, ya que en los siguientes casos
+            // llevar 3 turnos de daño e ir a por el cuarto también es mucho:
+            if (
+                   (gBattleMons[sBattler_AI].status2 & STATUS2_CURSED) // estar maldito
+                || (gStatuses3[sBattler_AI] & STATUS3_LEECHSEED)       // tener Leech Seed
+                || (gBattlerTargetKnowsMoveWithEffect(EFFECT_PROTECT)
+                    && PROTECT_WONT_FAIL_FOR(gBattlerTarget))          // que el rival pueda protegerse
+                || sBattler_AIisLosingHPDueToWeather(FALSE)            // ser dañado por clima y no tener Restos
+                || ((gBattleMons[sBattler_AI].item != ITEM_LEFTOVERS || sBattler_AIisLosingHPDueToWeather(TRUE)) && (Random()%2)) // o, el 50% de las veces, no tener Restos o ser dañado por clima pero sí tener Restos
+               )
+                turns_threshold -= 1; // hace que la IA se plantee el cambio un turno antes
+
+            if (move == MOVE_SUBSTITUTE)
+                turns_threshold -= 1;
+
+            notChangingIsAcceptable = (current_toxic_turns == turns_threshold);
+
+            if (current_toxic_turns >= turns_threshold // considera cambiar si se alcanza el umbral
+                && (currentMoveArray[0] <= 101 // y no escoge un movimiento que alcance los 102 puntos (probable KO)
+                 // Los siguientes movimientos casi nunca tiene sentido usarlos
+                 // estando intoxicado en un estado avanzado
+                 || gBattleMoves[move].effect == EFFECT_RESTORE_HP
+                 || gBattleMoves[move].effect == EFFECT_SOFTBOILED
+                 || gBattleMoves[move].effect == EFFECT_MOONLIGHT
+                 || gBattleMoves[move].effect == EFFECT_MORNING_SUN
+                 || gBattleMoves[move].effect == EFFECT_SYNTHESIS
+                 || gBattleMoves[move].effect == EFFECT_SHORE_UP
                    )
-               )
-            && (currentMoveArray[0] <= 101 // y no escoge un movimiento que alcance los 102 puntos (probable KO)
-             // Los siguientes movimientos casi nunca tiene sentido usarlos
-             // estando intoxicado en un estado avanzado
-             || gBattleMoves[move].effect == EFFECT_RESTORE_HP
-             || gBattleMoves[move].effect == EFFECT_SOFTBOILED
-             || gBattleMoves[move].effect == EFFECT_MOONLIGHT
-             || gBattleMoves[move].effect == EFFECT_MORNING_SUN
-             || gBattleMoves[move].effect == EFFECT_SYNTHESIS
-             || gBattleMoves[move].effect == EFFECT_SHORE_UP
-               )
-            && AICanSwitchAssumingEnoughPokemon())
+			          && AICanSwitchAssumingEnoughPokemon())
             {
                 bool8 convenient_move = FALSE; // TRUE si en el mov hace que no sea relevante el estar intoxicado
                 switch (gBattleMoves[move].effect) {
@@ -1187,9 +1201,15 @@ static u8 ChooseMoveOrAction_Singles(void)
                     case EFFECT_BATON_PASS:
                         convenient_move = TRUE;
                 }
-             if (!convenient_move)
-                SWITCH_IF_THERE_IS_A_SUITABLE_MON(NOT_CHANGING_IS_UNACCEPTABLE);
+                if (!convenient_move)
+                {
+                    if (notChangingIsAcceptable)
+                        SWITCH_IF_THERE_IS_A_SUITABLE_MON(NOT_CHANGING_IS_ACCEPTABLE);
+                    else
+                        SWITCH_IF_THERE_IS_A_SUITABLE_MON(NOT_CHANGING_IS_UNACCEPTABLE);
+                }
             }
+        }
 
         // Si toca esperar un turno por Truant y cuando pueda atacar no espera hacer OHKO,
         // la IA mira si puede hacer un buen cambio en lugar de atacar
