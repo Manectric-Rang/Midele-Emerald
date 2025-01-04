@@ -5069,6 +5069,7 @@ AI_TryToFaint_NotSolarBeam:
     if_effect EFFECT_VITAL_THROW, AI_TryToFaint_LowPriorityMove
     if_effect EFFECT_REVENGE, AI_TryToFaint_LowPriorityMove
 	if_effect EFFECT_EXPLOSION, AI_TryToFaint_Explosion
+    if_effect EFFECT_ERUPTION, AI_TryToFaint_Eruption
 AI_TryToFaint_CheckContact:
     if_move_is_contactless AI_TryToFaint_SkipContactCheck
     if_status2 AI_TARGET, STATUS2_SUBSTITUTE, AI_TryToFaint_SkipContactCheck
@@ -5212,6 +5213,11 @@ AI_TryToFaint_LowPriorityMove:
     if_target_faster AI_TryToFaint_CheckContact
     score -2  @ Recibirá dos puntos menos que un ataque de la misma precisión
     goto AI_TryToFaint_IncreaseScoreDependingOnAccuracy
+
+AI_TryToFaint_Eruption:
+    if_user_faster AI_TryToFaint_IncreaseScoreDependingOnAccuracy
+    if_accuracy_less_than 85, AI_TryToFaint_End
+    goto AI_TryToFaint_ScoreUp1
 
 AI_TryToFaint_Explosion:
     if_status2 AI_TARGET, STATUS2_SUBSTITUTE, AI_TryToFaint_End
