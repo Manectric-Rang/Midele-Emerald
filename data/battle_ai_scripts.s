@@ -2368,7 +2368,7 @@ AI_CV_Roar:
 	if_not_side_affecting AI_TARGET, SIDE_STATUS_SPIKES, AI_CV_Roar_Discourage
 	if_ability_might_be AI_TARGET, ABILITY_LEVITATE, AI_CV_Roar_SpikesWontFaintTheTarget
 	if_type AI_TARGET, TYPE_FLYING, AI_CV_Roar_SpikesWontFaintTheTarget
-	if_hp_condition TARGET_HAS_1_MAX_HP, Score_Plus2
+	if_hp_condition TARGET_HAS_1_MAX_HP, AI_CV_Roar3
 	if_has_a_50_percent_hp_recovery_move AI_TARGET, AI_CV_Roar_SpikesWontFaintTheTarget
 	get_spikes_count AI_TARGET
 	if_equal 3, AI_CV_Roar_Spikes_3
@@ -2411,7 +2411,9 @@ AI_CV_Roar2_CheckSpeedForPossibleDragonDance:
 AI_CV_Roar2:
 	if_random_less_than 128, AI_CV_Roar_End
 AI_CV_Roar3:
-	score +2
+	if_target_faster Score_Plus2
+	calculate_nhko AI_TARGET
+	if_more_than 1, Score_Plus2
 AI_CV_Roar_End:
 	end
 
