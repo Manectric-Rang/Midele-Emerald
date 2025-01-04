@@ -2993,6 +2993,7 @@ AI_CV_Disable_DiscouragedMoveEffectsToDisableWhenStatused:
 
 AI_CV_Counter:
     if_hp_condition USER_HAS_1_HP, Score_Minus10
+    if_status2 AI_USER, STATUS2_SUBSTITUTE, Score_Minus10
     if_target_wont_attack_due_to_truant Score_Minus10
     if_perish_song_about_to_trigger AI_TARGET, Score_Minus10
     if_status2 AI_TARGET, STATUS2_RECHARGE, Score_Minus10
@@ -4033,6 +4034,7 @@ AI_CV_PsychUp_End:
 
 AI_CV_MirrorCoat:
     if_hp_condition USER_HAS_1_HP, Score_Minus10
+    if_status2 AI_USER, STATUS2_SUBSTITUTE, Score_Minus10
     if_target_wont_attack_due_to_truant Score_Minus10
     if_perish_song_about_to_trigger AI_TARGET, Score_Minus10
     if_status2 AI_TARGET, STATUS2_RECHARGE, Score_Minus10
