@@ -2817,7 +2817,7 @@ AI_CV_Substitute:
 	if_hp_condition USER_CANNOT_USE_SUB, AI_CV_Substitute_End
 	if_status AI_USER, STATUS1_TOXIC_POISON, Score_Minus5
 	if_status2 AI_USER, STATUS2_CURSED, Score_Minus5
-	if_status3 AI_USER, STATUS3_PERISH_SONG, Score_Minus5
+	if_status3 AI_USER, STATUS3_PERISH_SONG, AI_CV_Substitute_UnderPerishSong
 	goto AI_CV_Substitute_IsHealingAbilityActive
 AI_CV_SubstituteStart:
 	if_target_wont_attack_due_to_truant AI_CV_SubstitutePlus3Continue
@@ -2884,6 +2884,19 @@ AI_CV_Substitute_ConsiderALastBonus:
 	if_random_less_than 100, AI_CV_Substitute_End
 	score +1
 	goto AI_CV_Substitute_End
+
+@ En caso de estar bajo Perish Song, puede considerar usar sub para poder cambiar en el último momento, si no encuentra nada mejor
+AI_CV_Substitute_UnderPerishSong:
+	if_perish_song_about_to_trigger AI_USER, Score_Minus5
+	if_type AI_USER, TYPE_GHOST, Score_Minus5
+	if_status2 AI_USER, STATUS2_ESCAPE_PREVENTION, Score_Minus5
+	count_usable_party_mons AI_USER
+	if_equal 0, Score_Minus5
+	if_status2 AI_USER, STATUS2_WRAPPED, AI_CV_Substitute_End @ sí, sub quita Wrap y similares
+	if_has_move_with_effect AI_TARGET, EFFECT_MEAN_LOOK, AI_CV_Substitute_End
+	if_has_non_ineffective_move_with_effect AI_TARGET, EFFECT_TRAP, AI_CV_Substitute_End
+	goto Score_Minus5
+
 AI_CV_Substitute_SpeedBoost:
 	if_status2 AI_USER, STATUS2_SUBSTITUTE, AI_CV_Substitute_Minus3
 	if_user_faster Score_Plus5
